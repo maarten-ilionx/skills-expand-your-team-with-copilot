@@ -25,6 +25,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
 
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    if (darkModeToggle) {
+      darkModeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      darkModeToggle.setAttribute(
+        "aria-label",
+        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+      );
+    }
+  }
+
+  const savedTheme = localStorage.getItem("theme") || "light";
+  applyTheme(savedTheme);
+
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", newTheme);
+      applyTheme(newTheme);
+    });
+  }
+
   // Activity categories with corresponding colors
   const activityTypes = {
     sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
@@ -501,7 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create activity tag
     const tagHtml = `
-      <span class="activity-tag" style="background-color: ${typeInfo.color}; color: ${typeInfo.textColor}">
+      <span class="activity-tag activity-tag--${activityType}">
         ${typeInfo.label}
       </span>
     `;
@@ -694,15 +720,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       document.body.appendChild(confirmDialog);
 
-      // Style the buttons
-      const cancelBtn = confirmDialog.querySelector("#cancel-button");
-      const confirmBtn = confirmDialog.querySelector("#confirm-button");
-
-      cancelBtn.style.backgroundColor = "#f1f1f1";
-      cancelBtn.style.color = "#333";
-
-      confirmBtn.style.backgroundColor = "#dc3545";
-      confirmBtn.style.color = "white";
     }
 
     // Set the message
